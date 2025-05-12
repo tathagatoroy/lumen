@@ -1,5 +1,10 @@
-//! Constants used throughout the editor
-//! These are build-time constants that define the editor's basic behavior
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+
+use clap::ValueEnum;
+
+// Constants used throughout the editor
+// These are build-time constants that define the editor's basic behavior
 
 /// Default window size if terminal size cannot be determined
 pub const DEFAULT_WINDOW_WIDTH: usize = 80;
@@ -28,8 +33,8 @@ pub const MAX_LOG_FILES: usize = 5;
 
 /// Default key bindings
 /// These are the basic Vim-like key bindings
-pub const DEFAULT_KEYBINDINGS: &[(&str, &str)] = &[
-    ("←", "move_left"),
+pub const DEFAULT_KEYBINDINGS: &[(&'static str, &'static str)] = &[
+    ("←", "move_left"), 
     ("→", "move_right"),
     ("↑", "move_up"),
     ("↓", "move_down"),
@@ -37,14 +42,22 @@ pub const DEFAULT_KEYBINDINGS: &[(&str, &str)] = &[
     ("esc", "enter_normal_mode"),
     (":w", "save_file"),
     (":q", "quit"),
-    ("a", "append_after_cursor"),
-    ("A", "append_end_of_line"),
-    ("o", "open_line_below"),
-    ("O", "open_line_above"),
-    ("c", "change_to_insert_mode"),
-    ("C", "change_to_insert_mode_end_of_line"),
-    
+    (":a", "append_after_cursor"),
+    (":A", "append_end_of_line"),
+    (":o", "open_line_below"),
+    (":O", "open_line_above"),
+    (":c", "change_to_insert_mode"),
+    (":C", "change_to_insert_mode_end_of_line"),
 ];
+
+/// use spaces for tabs
+pub const DEFAULT_USE_SPACES: bool = true;
+
+/// default is to show line numbers
+pub const DEFAULT_SHOW_LINE_NUMBERS: bool = true;
+
+/// default is to highlight the current line
+pub const DEFAULT_HIGHLIGHT_CURRENT_LINE: bool = true;
 
 /// Editor modes
 /// These define the different states the editor can be in
@@ -59,7 +72,7 @@ pub enum EditorMode {
 
 /// Log levels for the editor
 /// These match the standard logging levels
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, ValueEnum)]
 pub enum LogLevel {
     Error,
     Warn,

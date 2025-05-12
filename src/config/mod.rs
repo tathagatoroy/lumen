@@ -1,12 +1,11 @@
 mod constants;
-mod settings;
+pub mod settings;
 
 use std::path::PathBuf;
 use std::error::Error;
-use std::fs::File;
-use settings::{Args, Settings};
+use crate::config::settings::{Args, Settings};
 
-
+#[derive(Debug, Clone)]
 pub struct Config {
     pub settings: Settings,
     pub args: Args,
@@ -14,16 +13,18 @@ pub struct Config {
 
 impl Config {
     pub fn new(args: Args) -> Result<Self, Box<dyn Error>> {
-        let settings = Settings::new()?;
+        let settings = Settings::new();
         Ok(Self { settings, args })
     }
-    /// returns settings and args
+    // add default file to open
+    pub fn file_to_open(&self) -> Option<PathBuf> {
+        self.args.file.clone()
+
+    }
 }
 
 
-// re export the settings and args
-pub use constants::*;
-pub use settings::*;
+
 
 
 

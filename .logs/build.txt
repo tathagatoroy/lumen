@@ -1,0 +1,103 @@
+   Compiling lumen v0.1.0 (C:\Users\91833\Tathagato\learning_rust\lumen)
+warning: constant `DEFAULT_WINDOW_WIDTH` is never used
+  --> src\config\constants.rs:10:11
+   |
+10 | pub const DEFAULT_WINDOW_WIDTH: usize = 80;
+   |           ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: constant `DEFAULT_WINDOW_HEIGHT` is never used
+  --> src\config\constants.rs:11:11
+   |
+11 | pub const DEFAULT_WINDOW_HEIGHT: usize = 24;
+   |           ^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MAX_UNDO_STEPS` is never used
+  --> src\config\constants.rs:15:11
+   |
+15 | pub const MAX_UNDO_STEPS: usize = 1000;
+   |           ^^^^^^^^^^^^^^
+
+warning: constant `MAX_FILE_SIZE` is never used
+  --> src\config\constants.rs:23:11
+   |
+23 | pub const MAX_FILE_SIZE: usize = 10 * 1024 * 1024; // 10MB
+   |           ^^^^^^^^^^^^^
+
+warning: constant `DEFAULT_LOG_PATH` is never used
+  --> src\config\constants.rs:26:11
+   |
+26 | pub const DEFAULT_LOG_PATH: &str = ".log/editor.log";
+   |           ^^^^^^^^^^^^^^^^
+
+warning: constant `MAX_LOG_SIZE` is never used
+  --> src\config\constants.rs:29:11
+   |
+29 | pub const MAX_LOG_SIZE: usize = 5 * 1024 * 1024; // 5MB
+   |           ^^^^^^^^^^^^
+
+warning: constant `MAX_LOG_FILES` is never used
+  --> src\config\constants.rs:32:11
+   |
+32 | pub const MAX_LOG_FILES: usize = 5;
+   |           ^^^^^^^^^^^^^
+
+warning: variants `Normal`, `Insert`, and `Command` are never constructed
+  --> src\config\constants.rs:68:5
+   |
+67 | pub enum EditorMode {
+   |          ---------- variants in this enum
+68 |     Normal,  // Command mode (like Vim's normal mode)
+   |     ^^^^^^
+69 |     Insert,  // Text insertion mode
+   |     ^^^^^^
+70 |     Command, // Command line mode (like Vim's : mode)
+   |     ^^^^^^^
+   |
+   = note: `EditorMode` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: multiple associated items are never used
+   --> src\config\settings.rs:74:12
+    |
+69  | impl Settings {
+    | ------------- associated items in this implementation
+...
+74  |     pub fn load_from_file(path: &PathBuf) -> Result<Self, Box<dyn std::error::Error>> {
+    |            ^^^^^^^^^^^^^^
+...
+83  |     pub fn save_to_file(&self, path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    |            ^^^^^^^^^^^^
+...
+91  |     pub fn get_tab_width(&self) -> usize {
+    |            ^^^^^^^^^^^^^
+...
+94  |     pub fn get_use_spaces(&self) -> bool {
+    |            ^^^^^^^^^^^^^^
+...
+97  |     pub fn get_show_line_numbers(&self) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^^^^
+...
+100 |     pub fn get_highlight_current_line(&self) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+103 |     pub fn get_key_bindings(&self) -> &Vec<(String, String)> {
+    |            ^^^^^^^^^^^^^^^^
+...
+107 |     fn set_tab_width(&mut self, tab_width: usize) {
+    |        ^^^^^^^^^^^^^
+...
+110 |     fn set_use_spaces(&mut self, use_spaces: bool) {
+    |        ^^^^^^^^^^^^^^
+...
+113 |     fn set_show_line_numbers(&mut self, show_line_numbers: bool) {
+    |        ^^^^^^^^^^^^^^^^^^^^^
+...
+116 |     fn set_highlight_current_line(&mut self, highlight_current_line: bool) {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+119 |     fn set_key_bindings(&mut self, key_bindings: Vec<(String, String)>) {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: `lumen` (bin "lumen") generated 9 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.74s

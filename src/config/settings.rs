@@ -1,10 +1,14 @@
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+
 use std::path::PathBuf;
-use clap::{Parser, Subcommand};
+use clap::{Subcommand};
 use serde::{Deserialize, Serialize};
-use crate::config::constants::LogLevel;
+use crate::config::constants::*;
+use clap::Parser;
 
 /// Command line arguments for the editor
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
     /// Optional file to open
@@ -25,7 +29,7 @@ pub struct Args {
 }
 
 /// Available editor commands
-#[derive(Subcommand, Debug)]
+#[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
     /// Open a new file
     Open { path: PathBuf },
@@ -36,7 +40,7 @@ pub enum Commands {
 }
 
 /// Editor settings that can be configured at runtime
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Settings {
     /// Tab width in spaces
     pub tab_width: usize,
@@ -57,7 +61,7 @@ impl Default for Settings {
             use_spaces: DEFAULT_USE_SPACES,
             show_line_numbers: DEFAULT_SHOW_LINE_NUMBERS,
             highlight_current_line: DEFAULT_HIGHLIGHT_CURRENT_LINE,
-            key_bindings: DEFAULT_KEYBINDINGS.to_vec(),
+            key_bindings: DEFAULT_KEYBINDINGS.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect(),
         }
     }
 }
@@ -81,22 +85,22 @@ impl Settings {
         std::fs::write(path, contents)?;
         Ok(())
     }
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self::default()
     }
-    fn get_tab_width(&self) -> usize {
+    pub fn get_tab_width(&self) -> usize {
         self.tab_width
     }
-    fn get_use_spaces(&self) -> bool {
+    pub fn get_use_spaces(&self) -> bool {
         self.use_spaces
     }
-    fn get_show_line_numbers(&self) -> bool {
+    pub fn get_show_line_numbers(&self) -> bool {
         self.show_line_numbers
     }
-    fn get_highlight_current_line(&self) -> bool {
+    pub fn get_highlight_current_line(&self) -> bool {
         self.highlight_current_line
     }
-    fn get_key_bindings(&self) -> &Vec<(String, String)> {
+    pub fn get_key_bindings(&self) -> &Vec<(String, String)> {
         &self.key_bindings
     }
 

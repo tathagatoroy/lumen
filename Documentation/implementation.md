@@ -81,3 +81,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 1. Heavy use of AI tools (DeepSeek, Gemini, Cursor)
 2. [Xi](https://xi-editor.io/docs/)
 3. [Zed](https://github.com/zed-industries/zed)
+4. [How to build your own text editor](https://viewsourcecode.org/snaptoken/kilo/index.html)
