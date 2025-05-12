@@ -1,0 +1,27 @@
+[package]
+name = "lumen"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A modern text editor written in Rust"
+
+[dependencies]
+# Core dependencies
+crossterm = "0.26"      # Terminal manipulation
+unicode-width = "0.1"    # Unicode character width calculation
+log = "0.4"             # Logging
+env_logger = "0.10"     # Logging implementation
+
+# Configuration and argument parsing
+clap = { version = "4.3", features = ["derive"] }  # Command line argument parsing
+serde = { version = "1.0", features = ["derive"] } # Serialization/deserialization
+toml = "0.7"            # TOML configuration file format
+serde_json = "1.0"      # JSON serialization/deserialization
+
+# File handling
+walkdir = "2.3"         # Directory traversal
+filetime = "0.2"        # File timestamp operations
+
+[dev-dependencies]
+# Testing dependencies
+criterion = "0.5"       # Benchmarking 

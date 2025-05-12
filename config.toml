@@ -1,0 +1,14 @@
+# Editor settings
+tab_width = 4
+use_spaces = true
+show_line_numbers = true
+highlight_current_line = true
+
+# Key bindings
+[[key_bindings]]
+key = "ctrl+s"
+action = "save"
+
+[[key_bindings]]
+key = "ctrl+q"
+action = "quit" 
