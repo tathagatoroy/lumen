@@ -21,11 +21,15 @@ pub struct Args {
 
     /// Log level
     #[arg(short, long, default_value = "info")]
-    pub log_level: LogLevel,
+    pub logLevel: LogLevel,
 
     /// Command to execute
     #[command(subcommand)]
     pub command: Option<Commands>,
+
+    /// bol to indicate if debug mode is enabled
+    #[arg(short, long, default_value = "false")]
+    pub debug: bool,
 }
 
 /// Available editor commands
@@ -43,25 +47,25 @@ pub enum Commands {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Settings {
     /// Tab width in spaces
-    pub tab_width: usize,
+    pub tabWidth: usize,
     /// Whether to use spaces instead of tabs
-    pub use_spaces: bool,
+    pub useSpaces: bool,
     /// Whether to show line numbers
-    pub show_line_numbers: bool,
+    pub showLineNumbers: bool,
     /// Whether to highlight current line
-    pub highlight_current_line: bool,
+    pub highlightCurrentLine: bool,
     /// Custom key bindings
-    pub key_bindings: Vec<(String, String)>,
+    pub keyBindings: Vec<(String, String)>,
 }
 
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            tab_width: DEFAULT_TAB_WIDTH,
-            use_spaces: DEFAULT_USE_SPACES,
-            show_line_numbers: DEFAULT_SHOW_LINE_NUMBERS,
-            highlight_current_line: DEFAULT_HIGHLIGHT_CURRENT_LINE,
-            key_bindings: DEFAULT_KEYBINDINGS.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect(),
+            tabWidth: DEFAULT_TAB_WIDTH,
+            useSpaces: DEFAULT_USE_SPACES,
+            showLineNumbers: DEFAULT_SHOW_LINE_NUMBERS,
+            highlightCurrentLine: DEFAULT_HIGHLIGHT_CURRENT_LINE,
+            keyBindings: DEFAULT_KEYBINDINGS.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect(),
         }
     }
 }
@@ -71,7 +75,7 @@ impl Settings {
     /// ? means that the function can return an error
     /// else it returns the settings
     /// Ok means that the function returns a value
-    pub fn load_from_file(path: &PathBuf) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn loadFromFile(path: &PathBuf) -> Result<Self, Box<dyn std::error::Error>> {
         let contents = std::fs::read_to_string(path)?;
         let settings: Settings = toml::from_str(&contents)?;
         Ok(settings)
@@ -80,7 +84,7 @@ impl Settings {
     /// Save settings to a configuration file
     /// ? means that the function can return an error
     /// Box<dyn std::error::Error> means that the function can return any error that implements the std::error::Error trait
-    pub fn save_to_file(&self, path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn saveToFile(&self, path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
         let contents = toml::to_string_pretty(self)?;
         std::fs::write(path, contents)?;
         Ok(())
@@ -88,35 +92,35 @@ impl Settings {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn get_tab_width(&self) -> usize {
-        self.tab_width
+    pub fn getTabWidth(&self) -> usize {
+        self.tabWidth
     }
-    pub fn get_use_spaces(&self) -> bool {
-        self.use_spaces
+    pub fn getUseSpaces(&self) -> bool {
+        self.useSpaces
     }
-    pub fn get_show_line_numbers(&self) -> bool {
-        self.show_line_numbers
+    pub fn getShowLineNumbers(&self) -> bool {
+        self.showLineNumbers
     }
-    pub fn get_highlight_current_line(&self) -> bool {
-        self.highlight_current_line
+    pub fn getHighlightCurrentLine(&self) -> bool {
+        self.highlightCurrentLine
     }
-    pub fn get_key_bindings(&self) -> &Vec<(String, String)> {
-        &self.key_bindings
+    pub fn getKeyBindings(&self) -> &Vec<(String, String)> {
+        &self.keyBindings
     }
 
-    fn set_tab_width(&mut self, tab_width: usize) {
-        self.tab_width = tab_width;
+    fn setTabWidth(&mut self, tabWidth: usize) {
+        self.tabWidth = tabWidth;
     }
-    fn set_use_spaces(&mut self, use_spaces: bool) {
-        self.use_spaces = use_spaces;
+    fn setUseSpaces(&mut self, useSpaces: bool) {
+        self.useSpaces = useSpaces;
     }   
-    fn set_show_line_numbers(&mut self, show_line_numbers: bool) {
-        self.show_line_numbers = show_line_numbers;
+    fn setShowLineNumbers(&mut self, showLineNumbers: bool) {
+        self.showLineNumbers = showLineNumbers;
     }
-    fn set_highlight_current_line(&mut self, highlight_current_line: bool) {
-        self.highlight_current_line = highlight_current_line;
+    fn setHighlightCurrentLine(&mut self, highlightCurrentLine: bool) {
+        self.highlightCurrentLine = highlightCurrentLine;
     }
-    fn set_key_bindings(&mut self, key_bindings: Vec<(String, String)>) {
-        self.key_bindings = key_bindings;
+    fn setKeyBindings(&mut self, keyBindings: Vec<(String, String)>) {
+        self.keyBindings = keyBindings;
     }
 } 

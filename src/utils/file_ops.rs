@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use log::{info, error};
 
 // read a file and log if it is opened successfully
-pub fn read_file(path: &PathBuf) -> Result<File, io::Error> {
+pub fn readFile(path: &PathBuf) -> Result<File, io::Error> {
     match File::open(path) {
         Ok(file) => {
             //  file read successfully

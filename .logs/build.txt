@@ -1,103 +1,47 @@
    Compiling lumen v0.1.0 (C:\Users\91833\Tathagato\learning_rust\lumen)
-warning: constant `DEFAULT_WINDOW_WIDTH` is never used
-  --> src\config\constants.rs:10:11
+error[E0107]: type alias takes 1 generic argument but 2 generic arguments were supplied
+  --> src/main.rs:67:14
    |
-10 | pub const DEFAULT_WINDOW_WIDTH: usize = 80;
-   |           ^^^^^^^^^^^^^^^^^^^^
+67 | fn main() -> Result<(), EditorError> {
+   |              ^^^^^^     ----------- help: remove this generic argument
+   |              |
+   |              expected 1 generic argument
    |
-   = note: `#[warn(dead_code)]` on by default
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\91833\.cargo\registry\src\index.crates.io-6f17d22bba15001f\crossterm-0.26.1\src\error.rs:6:10
+   |
+6  | pub type Result<T> = std::result::Result<T, ErrorKind>;
+   |          ^^^^^^ -
 
-warning: constant `DEFAULT_WINDOW_HEIGHT` is never used
-  --> src\config\constants.rs:11:11
+error[E0119]: conflicting implementations of trait `From<std::io::Error>` for type `EditorError`
+  --> src\utils\error.rs:29:1
    |
-11 | pub const DEFAULT_WINDOW_HEIGHT: usize = 24;
-   |           ^^^^^^^^^^^^^^^^^^^^^
+23 | impl From<io::Error> for EditorError {
+   | ------------------------------------ first implementation here
+...
+29 | impl From<CrosstermErrorKind> for EditorError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `EditorError`
 
-warning: constant `MAX_UNDO_STEPS` is never used
-  --> src\config\constants.rs:15:11
+error[E0277]: `?` couldn't convert the error to `std::io::Error`
+  --> src/main.rs:77:35
    |
-15 | pub const MAX_UNDO_STEPS: usize = 1000;
-   |           ^^^^^^^^^^^^^^
-
-warning: constant `MAX_FILE_SIZE` is never used
-  --> src\config\constants.rs:23:11
+67 | fn main() -> Result<(), EditorError> {
+   |              ----------------------- expected `std::io::Error` because of this
+...
+77 |     let config = Config::new(args)?;
+   |                  -----------------^ the trait `From<Box<dyn StdError>>` is not implemented for `std::io::Error`, which is required by `Result<(), std::io::Error>: FromResidual<Result<Infallible, Box<dyn StdError>>>`
+   |                  |
+   |                  this can't be annotated with `?` because it has type `Result<_, Box<(dyn StdError + 'static)>>`
    |
-23 | pub const MAX_FILE_SIZE: usize = 10 * 1024 * 1024; // 10MB
-   |           ^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `std::io::Error` implements `From<IntoInnerError<W>>`
+             `std::io::Error` implements `From<NulError>`
+             `std::io::Error` implements `From<TryReserveError>`
+             `std::io::Error` implements `From<anstyle_wincon::windows::inner::IoError>`
+             `std::io::Error` implements `From<std::io::ErrorKind>`
+   = note: required for `Result<(), std::io::Error>` to implement `FromResidual<Result<Infallible, Box<dyn StdError>>>`
 
-warning: constant `DEFAULT_LOG_PATH` is never used
-  --> src\config\constants.rs:26:11
-   |
-26 | pub const DEFAULT_LOG_PATH: &str = ".log/editor.log";
-   |           ^^^^^^^^^^^^^^^^
-
-warning: constant `MAX_LOG_SIZE` is never used
-  --> src\config\constants.rs:29:11
-   |
-29 | pub const MAX_LOG_SIZE: usize = 5 * 1024 * 1024; // 5MB
-   |           ^^^^^^^^^^^^
-
-warning: constant `MAX_LOG_FILES` is never used
-  --> src\config\constants.rs:32:11
-   |
-32 | pub const MAX_LOG_FILES: usize = 5;
-   |           ^^^^^^^^^^^^^
-
-warning: variants `Normal`, `Insert`, and `Command` are never constructed
-  --> src\config\constants.rs:68:5
-   |
-67 | pub enum EditorMode {
-   |          ---------- variants in this enum
-68 |     Normal,  // Command mode (like Vim's normal mode)
-   |     ^^^^^^
-69 |     Insert,  // Text insertion mode
-   |     ^^^^^^
-70 |     Command, // Command line mode (like Vim's : mode)
-   |     ^^^^^^^
-   |
-   = note: `EditorMode` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
-
-warning: multiple associated items are never used
-   --> src\config\settings.rs:74:12
-    |
-69  | impl Settings {
-    | ------------- associated items in this implementation
-...
-74  |     pub fn load_from_file(path: &PathBuf) -> Result<Self, Box<dyn std::error::Error>> {
-    |            ^^^^^^^^^^^^^^
-...
-83  |     pub fn save_to_file(&self, path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-    |            ^^^^^^^^^^^^
-...
-91  |     pub fn get_tab_width(&self) -> usize {
-    |            ^^^^^^^^^^^^^
-...
-94  |     pub fn get_use_spaces(&self) -> bool {
-    |            ^^^^^^^^^^^^^^
-...
-97  |     pub fn get_show_line_numbers(&self) -> bool {
-    |            ^^^^^^^^^^^^^^^^^^^^^
-...
-100 |     pub fn get_highlight_current_line(&self) -> bool {
-    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-103 |     pub fn get_key_bindings(&self) -> &Vec<(String, String)> {
-    |            ^^^^^^^^^^^^^^^^
-...
-107 |     fn set_tab_width(&mut self, tab_width: usize) {
-    |        ^^^^^^^^^^^^^
-...
-110 |     fn set_use_spaces(&mut self, use_spaces: bool) {
-    |        ^^^^^^^^^^^^^^
-...
-113 |     fn set_show_line_numbers(&mut self, show_line_numbers: bool) {
-    |        ^^^^^^^^^^^^^^^^^^^^^
-...
-116 |     fn set_highlight_current_line(&mut self, highlight_current_line: bool) {
-    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-119 |     fn set_key_bindings(&mut self, key_bindings: Vec<(String, String)>) {
-    |        ^^^^^^^^^^^^^^^^
-
-warning: `lumen` (bin "lumen") generated 9 warnings
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.74s
+Some errors have detailed explanations: E0107, E0119, E0277.
+For more information about an error, try `rustc --explain E0107`.
+error: could not compile `lumen` (bin "lumen") due to 3 previous errors

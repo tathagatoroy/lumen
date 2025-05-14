@@ -17,9 +17,8 @@ impl Config {
         Ok(Self { settings, args })
     }
     // add default file to open
-    pub fn file_to_open(&self) -> Option<PathBuf> {
+    pub fn fileToOpen(&self) -> Option<PathBuf> {
         self.args.file.clone()
-
     }
 }
 
