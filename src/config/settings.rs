@@ -1,10 +1,12 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+#![allow(non_snake_case)]
+#![allow(dead_code)]
 
 use std::path::PathBuf;
 use clap::{Subcommand};
 use serde::{Deserialize, Serialize};
-use crate::config::constants::*;
+use crate::{config::constants::*, utils::error::editorError};
 use clap::Parser;
 
 /// Command line arguments for the editor
@@ -75,18 +77,18 @@ impl Settings {
     /// ? means that the function can return an error
     /// else it returns the settings
     /// Ok means that the function returns a value
-    pub fn loadFromFile(path: &PathBuf) -> Result<Self, Box<dyn std::error::Error>> {
-        let contents = std::fs::read_to_string(path)?;
-        let settings: Settings = toml::from_str(&contents)?;
+    pub fn loadFromFile(path: &PathBuf) -> Result<Self, editorError> {
+        let contents = std::fs::read_to_string(path).map_err(editorError::IOError)?;
+        let settings: Settings = toml::from_str(&contents).map_err(editorError::TomlDeserializeError)?;
         Ok(settings)
     }
 
     /// Save settings to a configuration file
     /// ? means that the function can return an error
     /// Box<dyn std::error::Error> means that the function can return any error that implements the std::error::Error trait
-    pub fn saveToFile(&self, path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-        let contents = toml::to_string_pretty(self)?;
-        std::fs::write(path, contents)?;
+    pub fn saveToFile(&self, path: &PathBuf) -> Result<(), editorError> {
+        let contents = toml::to_string_pretty(self).map_err(editorError::TomlError)?;
+        std::fs::write(path, contents).map_err(editorError::IOError)?;
         Ok(())
     }
     pub fn new() -> Self {

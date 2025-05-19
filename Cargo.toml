@@ -11,6 +11,7 @@ crossterm = "0.26"      # Terminal manipulation
 unicode-width = "0.1"    # Unicode character width calculation
 log = "0.4"             # Logging
 env_logger = "0.10"     # Logging implementation
+thiserror = "1.0"       # Error handling
 
 # Configuration and argument parsing
 clap = { version = "4.3", features = ["derive"] }  # Command line argument parsing

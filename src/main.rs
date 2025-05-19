@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+#![allow(non_snake_case)]
 
 mod editor;
 mod ui;
@@ -11,8 +12,9 @@ mod config;
 use crate::config::{Config};
 use crate::config::settings::{Args};
 use std::error::Error;
+use crossterm::event::KeyEventKind;
 use utils::file_ops::readFile;
-use utils::error::EditorError;
+use utils::error::{editorError};
 use clap::Parser;
 use std::io::{Write, stdout};
 use crossterm::{
@@ -25,46 +27,77 @@ use crossterm::{
     QueueableCommand
 };
 
-fn run_editor() -> CrosstermResult<()> {
+fn run_editor() -> Result<(), editorError>{
     let mut stdout = stdout();
 
     // enable raw mode 
-    terminal::enable_raw_mode()?;
-    execute!(stdout, EnterAlternateScreen, Clear(ClearType::All), cursor::MoveTo(0, 0))?;
+    terminal::enable_raw_mode().map_err(|e| editorError:: TerminalError {source : e})?;
+    execute!(stdout, EnterAlternateScreen, Clear(ClearType::All), cursor::MoveTo(0,0))
+    .map_err(|e|editorError::TerminalError { source: e })?;
+
+    let (cols, rows) = terminal::size().map_err(|e| editorError::TerminalError { source: e })?;
+    // println!("Initial terminal size: {} cols, {} rows", cols, rows); // Avoid println in TUI
+
+
     let mut rowString = String::from("");
     loop {
-        // get terminal size 
-        if let Event::Resize(cols, rows) = event::read()?{
-            let rows = rows as usize;
-            let cols = cols as usize;
-            println!("Terminal resized to {}x{}", cols, rows);
+        let event = event::read().map_err(|e| editorError::EventReadError { source: e })?;
 
-        }
-
-        // read input event 
-        if let Event::Key(KeyEvent {code, modifiers, kind, state}) = event::read()?{
-            if code == KeyCode::Char('q') && modifiers.contains(KeyModifiers::CONTROL) {
-                break;
-            }
-            match code {
-                KeyCode::Char(c) => {
-                    rowString.push(c);
+        match event{
+            Event::Key (KeyEvent {
+                code,
+                modifiers,
+                kind,
+                state: _,
+            }) => {
+                // handle control Q to exit 
+                if kind == KeyEventKind::Press || kind == KeyEventKind::Repeat{
+                    if code == KeyCode::Char('q') && modifiers.contains(KeyModifiers::CONTROL){
+                        break;
+                    }
                 }
-                _ => {}
+                if kind == KeyEventKind::Press{
+                    match code { 
+                        KeyCode::Char(c) => {
+                            rowString.push(c);
+                        }
+                        KeyCode::Backspace => {
+                            rowString.pop();
+                        }
+                        KeyCode::Enter => {
+                            rowString.push('\n');
+                        }
+
+                        _ => {}
+                    }
+                }
             }
+            _ => {}
         }
-        // update the string to be rendered
-        execute!(stdout, cursor::MoveTo(0, 0), Print(rowString.clone()))?;
-        stdout.flush()?;
+        execute!(
+            stdout,
+            cursor::MoveTo(0,0),
+            Clear(ClearType::CurrentLine),
+            Print(rowString.as_str())
+        )
+        .map_err(|e| editorError::TerminalError { source: e })?;
+
+        stdout.flush().map_err(editorError::IOError)?;
+
 
     }
+    //cleanup
 
-    execute!(stdout, LeaveAlternateScreen, cursor::Show)?;
-    terminal::disable_raw_mode()?;
+    
+
+    execute!(stdout, LeaveAlternateScreen, cursor::Show)
+    .map_err(|e|editorError::TerminalError { source: e })?;
+    terminal::disable_raw_mode()
+    .map_err(|e| editorError::TerminalError{source : e})?;
     Ok(())
 }
 
-fn main() -> Result<(), EditorError> {
+fn main() -> Result<(), editorError> {
     // Initialize logging
     env_logger::init();
     

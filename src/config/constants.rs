@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
-
+#![allow(dead_code)]
 use clap::ValueEnum;
 
 // Constants used throughout the editor

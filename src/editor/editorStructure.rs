@@ -1,6 +1,13 @@
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+
+mod utils;
+
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use crate::config::constants::*;
+use crate::utils::error::editorError;
 
 
 // represents each row of the editor
@@ -92,8 +99,9 @@ impl EditorStructure {
         Self::default()
     }
 
-    pub fn openFile(&mut self, path: PathBuf) -> Result<(), Box<dyn Error>> {
+    pub fn openFile(&mut self, path: PathBuf) -> Result<(), editorError> {
         self.filePath = path;
         self.dirty = false;
         Ok(())
     }
+}
