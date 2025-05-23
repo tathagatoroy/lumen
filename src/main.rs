@@ -1,6 +1,7 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 
 mod editor;
 mod ui;
@@ -9,6 +10,7 @@ mod utils;
 mod config;
 
 
+use std::env;
 use crate::config::{Config};
 use crate::config::settings::{Args};
 use std::error::Error;
@@ -26,6 +28,8 @@ use crossterm::{
     Result as CrosstermResult,
     QueueableCommand
 };
+use log::{debug, info, error};
+use env_logger;
 
 fn run_editor() -> Result<(), editorError>{
     let mut stdout = stdout();
@@ -36,7 +40,7 @@ fn run_editor() -> Result<(), editorError>{
     .map_err(|e|editorError::TerminalError { source: e })?;
 
     let (cols, rows) = terminal::size().map_err(|e| editorError::TerminalError { source: e })?;
-    // println!("Initial terminal size: {} cols, {} rows", cols, rows); // Avoid println in TUI
+    info!("Initial terminal size: {} cols, {} rows", cols, rows); // Avoid println in TUI
 
 
     let mut rowString = String::from("");
@@ -52,11 +56,14 @@ fn run_editor() -> Result<(), editorError>{
             }) => {
                 // handle control Q to exit 
                 if kind == KeyEventKind::Press || kind == KeyEventKind::Repeat{
-                    if code == KeyCode::Char('q') && modifiers.contains(KeyModifiers::CONTROL){
+                    if code == KeyCode::Char('w') && modifiers.contains(KeyModifiers::CONTROL){
+                        info!("kind : {:?} code : {:?}  modifiers : {:?}", kind, code, modifiers);
                         break;
                     }
                 }
                 if kind == KeyEventKind::Press{
+                    info!("kind : {:?} code : {:?}  modifiers : {:?}", kind, code, modifiers);
+
                     match code { 
                         KeyCode::Char(c) => {
                             rowString.push(c);
@@ -99,10 +106,17 @@ fn run_editor() -> Result<(), editorError>{
 
 fn main() -> Result<(), editorError> {
     // Initialize logging
-    env_logger::init();
+    std::fs::create_dir_all("logs").map_err(editorError::IOError)?;
+    let file = std::fs::File::create("logs/lumen.log").map_err(editorError::IOError)?;
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
+        .target(env_logger::Target::Pipe(Box::new(file)))
+        .init();
     
     // Initialize editor components
-    println!("Lumen Text Editor - Starting up...");
+    info!("Lumen Text Editor - Starting up...");
+    debug!("Debug message test");
+    info!("Info message test");
+    error!("Error message test");
     
     // Parse command line arguments and create config
     // parse the command line arguments and create a config defined in settings.rs
@@ -112,21 +126,18 @@ fn main() -> Result<(), editorError> {
     // get the args from the config as the old args was moved and is now in the config
     let args = config.args.clone();
 
-    if args.debug {
-        println!("Settings: {:?}", settings);
-        println!("Args: {:?}", args);
-    }
+
+    info!("Settings : {:?}", settings);
+    info!("Args : {:?}", args);
 
 
     // Print to stdout for user feedback
-    if args.debug {
-        println!("Configuration loaded successfully");
-    }
+
+    info!("Configuration loaded successfully");
+    
 
     if let Some(file) = config.fileToOpen() {
-        if args.debug {
-            println!("Opening file: {:?}", file);
-        }
+        info!("Opening file: {:?}", file);
         // open the file
         let file = readFile(&file)?;
     }

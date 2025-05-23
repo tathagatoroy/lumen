@@ -1,8 +1,11 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
+#![allow(dead_code)]
+
 
 use thiserror::Error;
 use std::io;
+use log::SetLoggerError;
 
 #[derive(Error, Debug)]
 /// wrapper to handle all errors
@@ -23,6 +26,9 @@ pub enum editorError {
     TomlError(#[from] toml::ser::Error),
 
     #[error("TOML deserialization failed: {0}")]
-    TomlDeserializeError(#[from] toml::de::Error)
+    TomlDeserializeError(#[from] toml::de::Error),
+
+    #[error("Logger initialization failed: {0}")]
+    LogError(#[from] SetLoggerError)
 }
 
