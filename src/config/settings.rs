@@ -49,7 +49,7 @@ pub enum Commands {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Settings {
     /// Tab width in spaces
-    pub tabWidth: usize,
+    pub tabWidth: u32,
     /// Whether to use spaces instead of tabs
     pub useSpaces: bool,
     /// Whether to show line numbers

@@ -8,7 +8,17 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use crate::config::constants::*;
 use crate::utils::error::editorError;
+use crate::utils::file_ops::readFile;
 
+/// Editor modes
+/// These define the different states the editor can be in
+#[derive(Debug, Clone, Copy, PartialEq)]
+/// partial eq is used to compare two instances of the same enum allows != and == to be used
+/// copy makes deepcopy and clone faster and not change the original value
+pub enum EditorMode {
+    Insert,  // Text insertion mode
+    Command, // Command line mode (like Vim's : mode)
+}
 
 // represents each row of the editor
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -34,6 +44,17 @@ impl Default for Row {
             size: 0,
         }
     }
+}
+
+/// Represents the different modes the editor can be in
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub enum EditorMode {
+    /// Insert mode for text input
+    Insert,
+    /// Command mode for executing commands
+    Command,
+    /// Visual mode for text selection
+    Visual,
 }
 
 /// Represents the core structure of the editor, containing all state information
@@ -72,6 +93,9 @@ pub struct EditorStructure {
     
     /// Current status message to display in the status bar
     pub statusMessage: String,
+
+    /// Current mode of the editor
+    pub mode: EditorMode,
 }
 
 // defaults for the editor structure
@@ -89,6 +113,7 @@ impl Default for EditorStructure {
             indentWidth: DEFAULT_TAB_WIDTH as u32,
             tabWidth: DEFAULT_TAB_WIDTH as u32,
             statusMessage: String::new(),
+            mode: EditorMode::Insert
         }
     }
 }
@@ -103,5 +128,26 @@ impl EditorStructure {
         self.filePath = path;
         self.dirty = false;
         Ok(())
+    }
+
+    pub fn initialiseEditor(&mut self) -> Result<(), editorError>{
+        let openedFile = readFile(self.path)?;
+        let reader = BufReader::new(openedFile);
+        for line in reader.lines(){
+
+            
+        }
+
+
+    }
+
+    /// Change the editor mode
+    pub fn set_mode(&mut self, mode: EditorMode) {
+        self.mode = mode;
+    }
+
+    /// Check if the editor is in a specific mode
+    pub fn is_mode(&self, mode: EditorMode) -> bool {
+        self.mode == mode
     }
 }

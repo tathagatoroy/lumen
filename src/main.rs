@@ -9,13 +9,12 @@ mod input;
 mod utils;
 mod config;
 
-
-use std::env;
+use std::{env, string};
 use crate::config::{Config};
 use crate::config::settings::{Args};
 use std::error::Error;
 use crossterm::event::KeyEventKind;
-use utils::file_ops::readFile;
+use utils::fileOps::readFile;
 use utils::error::{editorError};
 use clap::Parser;
 use std::io::{Write, stdout};
@@ -31,17 +30,21 @@ use crossterm::{
 use log::{debug, info, error};
 use env_logger;
 
+// Import our custom logging macros
+use crate::utils::logMacros::{logI, logD, logE};
+
+const TAG: &str = "main";
+
 fn run_editor() -> Result<(), editorError>{
     let mut stdout = stdout();
 
     // enable raw mode 
-    terminal::enable_raw_mode().map_err(|e| editorError:: TerminalError {source : e})?;
+    terminal::enable_raw_mode().map_err(|e| editorError::TerminalError {source : e})?;
     execute!(stdout, EnterAlternateScreen, Clear(ClearType::All), cursor::MoveTo(0,0))
     .map_err(|e|editorError::TerminalError { source: e })?;
 
     let (cols, rows) = terminal::size().map_err(|e| editorError::TerminalError { source: e })?;
-    info!("Initial terminal size: {} cols, {} rows", cols, rows); // Avoid println in TUI
-
+    logI!(TAG, "Initial terminal size: {} cols, {} rows", cols, rows);
 
     let mut rowString = String::from("");
     loop {
@@ -57,12 +60,12 @@ fn run_editor() -> Result<(), editorError>{
                 // handle control Q to exit 
                 if kind == KeyEventKind::Press || kind == KeyEventKind::Repeat{
                     if code == KeyCode::Char('w') && modifiers.contains(KeyModifiers::CONTROL){
-                        info!("kind : {:?} code : {:?}  modifiers : {:?}", kind, code, modifiers);
+                        logI!(TAG, "kind : {:?} code : {:?}  modifiers : {:?}", kind, code, modifiers);
                         break;
                     }
                 }
                 if kind == KeyEventKind::Press{
-                    info!("kind : {:?} code : {:?}  modifiers : {:?}", kind, code, modifiers);
+                    logI!(TAG, "kind : {:?} code : {:?}  modifiers : {:?}", kind, code, modifiers);
 
                     match code { 
                         KeyCode::Char(c) => {
@@ -113,10 +116,8 @@ fn main() -> Result<(), editorError> {
         .init();
     
     // Initialize editor components
-    info!("Lumen Text Editor - Starting up...");
-    debug!("Debug message test");
-    info!("Info message test");
-    error!("Error message test");
+    logI!(TAG, "Lumen Text Editor - Starting up...");
+
     
     // Parse command line arguments and create config
     // parse the command line arguments and create a config defined in settings.rs
@@ -127,17 +128,17 @@ fn main() -> Result<(), editorError> {
     let args = config.args.clone();
 
 
-    info!("Settings : {:?}", settings);
-    info!("Args : {:?}", args);
+    logI!(TAG, "Settings : {:?}", settings);
+    logI!(TAG, "Args : {:?}", args);
 
 
     // Print to stdout for user feedback
 
-    info!("Configuration loaded successfully");
+    logI!(TAG, "Configuration loaded successfully");
     
 
     if let Some(file) = config.fileToOpen() {
-        info!("Opening file: {:?}", file);
+        logI!(TAG, "Opening file: {:?}", file);
         // open the file
         let file = readFile(&file)?;
     }

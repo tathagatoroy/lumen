@@ -7,29 +7,29 @@ use clap::ValueEnum;
 // These are build-time constants that define the editor's basic behavior
 
 /// Default window size if terminal size cannot be determined
-pub const DEFAULT_WINDOW_WIDTH: usize = 80;
-pub const DEFAULT_WINDOW_HEIGHT: usize = 24;
+pub const DEFAULT_WINDOW_WIDTH: u32 = 80;
+pub const DEFAULT_WINDOW_HEIGHT: u32 = 24;
 
 /// Maximum number of undo operations to store
 /// This is a memory vs functionality tradeoff
-pub const MAX_UNDO_STEPS: usize = 1000;
+pub const MAX_UNDO_STEPS: u32 = 1000;
 
 /// Default tab width in spaces
 /// This is a common default in many editors
-pub const DEFAULT_TAB_WIDTH: usize = 4;
+pub const DEFAULT_TAB_WIDTH: u32 = 4;
 
 /// Maximum file size that can be opened (in bytes)
 /// This prevents accidentally opening huge files
-pub const MAX_FILE_SIZE: usize = 10 * 1024 * 1024; // 10MB
+pub const MAX_FILE_SIZE: u32 = 10 * 1024 * 1024; // 10MB
 
 /// Default log file path relative to the editor's working directory
 pub const DEFAULT_LOG_PATH: &str = ".log/editor.log";
 
 /// Maximum log file size before rotation (in bytes)
-pub const MAX_LOG_SIZE: usize = 5 * 1024 * 1024; // 5MB
+pub const MAX_LOG_SIZE: u32 = 5 * 1024 * 1024; // 5MB
 
 /// Number of backup log files to keep
-pub const MAX_LOG_FILES: usize = 5;
+pub const MAX_LOG_FILES: u32 = 5;
 
 /// Default key bindings
 /// These are the basic Vim-like key bindings
@@ -59,16 +59,6 @@ pub const DEFAULT_SHOW_LINE_NUMBERS: bool = true;
 /// default is to highlight the current line
 pub const DEFAULT_HIGHLIGHT_CURRENT_LINE: bool = true;
 
-/// Editor modes
-/// These define the different states the editor can be in
-#[derive(Debug, Clone, Copy, PartialEq)]
-/// partial eq is used to compare two instances of the same enum allows != and == to be used
-/// copy makes deepcopy and clone faster and not change the original value
-pub enum EditorMode {
-    Normal,  // Command mode (like Vim's normal mode)
-    Insert,  // Text insertion mode
-    Command, // Command line mode (like Vim's : mode)
-}
 
 /// Log levels for the editor
 /// These match the standard logging levels
